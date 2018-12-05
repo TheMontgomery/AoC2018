@@ -1,5 +1,3 @@
-import os.path
-import ctypes
 
 # Starting frequency of 0; will accumulate all input lines for net frequency change
 freqSum = "0"
@@ -12,4 +10,3 @@ for line in inputFile:
 
 # Once all numbers with +/- signs are appended, evaluate to get the total:
 print(eval(freqSum))
-#ctypes.windll.user32.MessageBoxW(0, "Frequency result: " + eval(freqSum), "Frequency Shift", 0)
