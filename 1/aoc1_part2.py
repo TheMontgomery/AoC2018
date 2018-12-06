@@ -1,38 +1,29 @@
-import os.path
-import ctypes
+from collections import defaultdict
 __author__ = "Monty Secor"
 # Starting frequency of 0; will accumulate all input lines for net frequency change
-freqSum = "0"
 intFreqSum = 0
-boolFreqFound = False
+intIterations = 0
+boolFreqFound = False                           # Starting condition, not found
 workingDir = "G:/Python/adventofcode2018/1/"
 
 # Store all frequency totals
 listFrequencies = []
+listNetFreq = set()
 
-# Each line of the file is a string beginning with + or -, followed by an integer
-inputFile = open(workingDir + "input")
-for line in inputFile:
-        freqSum = freqSum + line.rstrip()                # Concatenate all lines, remove newline
-        intFreqSum = eval(freqSum)
-
-        if line not in
-
-        if intfreqSum in listFrequencies:
-                print("Repeating frequency: " + str(intfreqsum))
-                boolFreqFound = True
-                break
-        else:
-                listFrequencies.append(intFreqSum)
+# Store all input file entries in a list, to iterate over later:
+with open(workingDir + "input") as inputFile:
+        listFrequencies = list(line.rstrip() for line in inputFile)
+        print("Initial load complete. Number of lines:" + str(len(listFrequencies)))
 
 while not boolFreqFound:
-        for freq in listFrequencies:
-                freqSum = freqSum + freq
-                intFreqSum = eval(freqSum)
-
-                if intFreqSum in
-
-
-# Once all numbers with +/- signs are appended, evaluate to get the total:
-print(eval(freqSum))
-#ctypes.windll.user32.MessageBoxW(0, "Frequency result: " + eval(freqSum), "Frequency Shift", 0)
+        for frequency in listFrequencies:
+                intFreqSum += int(frequency)
+                if intFreqSum not in listNetFreq:
+                        listNetFreq.add(intFreqSum)
+                else:
+                        print("First repeating frequency: " + str(intFreqSum))
+                        print("Iterations: " + str(intIterations))
+                        boolFreqFound = True
+                        break
+        intIterations += 1
+        print("Current net frequency: " + str(intFreqSum))
