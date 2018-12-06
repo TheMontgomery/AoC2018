@@ -18,7 +18,7 @@ for box in boxIds:
     found2 = False
     found3 = False
     charCount = Counter(box)
-    print("Box ID: ", box, "\t", charCount)
+    #print("Box ID: ", box, "\t", charCount)
 
     for letter in charCount:
         if charCount[letter] == 2:
