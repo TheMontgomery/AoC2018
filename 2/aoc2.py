@@ -7,7 +7,7 @@ twoChars, threeChars = 0, 0
 boxIds = defaultdict(str)
 
 # Read each box ID into a defaultdict
-with open(workingDir + "input2") as inFile:
+with open(workingDir + "input") as inFile:
     boxIds = [line.strip() for line in inFile]
     inFile.close()
 
@@ -21,6 +21,10 @@ for box in boxIds:
     print("Box ID: ", box, "\t", charCount)
 
     for letter in charCount:
+        if charCount[letter] == 2:
+            found2 = True
+        if charCount[letter] == 3:
+            found3 = True
 
     if found2:
         twoChars += 1
