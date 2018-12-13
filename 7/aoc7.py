@@ -11,7 +11,7 @@ stepOrder = ''
 #
 # Where "C" is the prerequisite, and A is the next step
 # Some steps will not have prerequisites, hence need to have master set of all steps
-with open(workingDir + 'input2') as inFile:
+with open(workingDir + 'input') as inFile:
     for line in inFile:
         prereq, step = line.rstrip().split(" ")[1:9:6]
         stepsMaster.add(step)
@@ -45,8 +45,8 @@ print("Part 1:", stepOrder)
 # Stated sequence of steps and prerequisites is still the same.
 
 from string import ascii_uppercase as alpha
-NUM_WORKERS = 2
-BASE_TIME = 1
+NUM_WORKERS = 5
+BASE_TIME = 61
 
 
 workers = defaultdict(list)
@@ -64,6 +64,9 @@ def timeNeeded(step):
 inProgress = set()
 #for i in range(6):
 while steps or any(workers.values()):
+    #print("\nCurrent second: ", timeElapsed)
+
+    # Assign tasks if available.
     for worker in workers:
         # Check if worker is assigned
         print("worker:", worker, "workers[worker]:", workers[worker])
@@ -85,7 +88,7 @@ while steps or any(workers.values()):
             available = sorted(set(steps).difference(inProgress))
             for step in available:
                 parents = sorted(prereqs[step])
-                print("Available: ", available)
+                #print("Available: ", available)
                 if len(parents) == 0 or all(prereq in stepOrder for prereq in parents):
                     print("Best available:", step, "Time needed:", timeNeeded(step), "worker ID:", worker)
                     inProgress.add(step)
@@ -93,9 +96,24 @@ while steps or any(workers.values()):
                     break
             #print("available steps:", available)
             #workers[worker] = (,0)
+
+    # Make a second pass of the assigned workers, and decrement the task time
+    for worker in workers:
+        if workers[worker]:
+            currentTask, workTime = workers[worker]
+            workTime -= 1
+            print("Current task:", currentTask, "Time remaining:", workTime)
+            if workTime == 0:
+                print("Task {0} complete by worker {1}".format(currentTask, worker))
+                inProgress.remove(currentTask)
+                stepOrder.append(currentTask)
+                steps.remove(currentTask)
+                workers[worker] = None
+                print("Current sequence:", ''.join(stepOrder))
+    print("Current second: ", timeElapsed, "\n")
     timeElapsed += 1
 
-print("Part 2: ", ''.join(stepOrder))
+print("\nPart 2: ", ''.join(stepOrder))
 print("Time elapsed: {0} seconds".format(timeElapsed))
     # for step in steps:
     #     parents = sorted(prereqs[step])
