@@ -4,43 +4,71 @@ from string import ascii_uppercase as alpha
 
 workingDir = "G:/Python/adventofcode2018/8/"
 USE_EXAMPLE = False
-HEADER_LENGTH = 2
 
-with open(workingDir + 'input2') as inFile:
+with open(workingDir + 'input') as inFile:
     master = [int(n) for n in inFile.read().split(' ')]
     inFile.close()
 
 print(master)
 
-# Function to parse the "tree"
-# Input: List, of integers (a subset of the master list)
-# Returns: Sum of metadata, value of metadata
-def getData(inputList):
-    numChildren, numMeta = inputList[:HEADER_LENGTH]
-    sumMeta = 0
 
-    print("\nEnter getData. numChildren: {0}\tnumMeta:{1}".format(numChildren, numMeta))
-    print("inputList:", inputList)
+def getData(i=0):
+    #numChild, numMeta = [inputList.pop(0) for i in range(2)]
+    numChild = master[i]
+    numMeta = master[i + 1]
+    children = defaultdict(int)
+    i += 2
+    metaSum, valueSum = 0, 0
 
-    if numChildren > 0:
-        payload = inputList[HEADER_LENGTH:-numMeta]
-        print("payload:", payload)
-        for n in range(numChildren):
-            #print(getData(payload))
-            sumMeta += getData(payload)
-    elif numChildren == 0:
-        print("no child nodes. Sum of metadata:", sum(inputList[-numMeta:]))
-        sumMeta += sum(inputList[-numMeta:])
-    # print("\nchild nodes: {0} metadata entries: {1}".format(numChildren, numMeta))
-    # print("metadata:", metadata)
-    # print("length of header + metadata:", len(inputList[:HEADER_LENGTH] + metadata))
-    # payload = inputList[HEADER_LENGTH:-numMeta]
-    # print("payload:", payload)
+    print("numChildren: {0}\tnumMeta: {1}\tpayload: {2}".format(numChild, numMeta, master[i:]))
 
-    return sumMeta
+    if numChild == 0:
+        for n in range(numMeta):
+            meta = master[i]
+            metaSum += meta
+            valueSum += meta
+            i += 1
+        print("No child nodes; returning:\ti: {0}\tmetaSum:{1}\tvalueSum:{2}".format(i, metaSum, valueSum))
+        return i, metaSum, valueSum
 
-sumMeta = getData(master)
+    for n in range(numChild):
+        i, val, meta = getData(i)
+        children[n] = meta
+        print("child n: {0}\tpos: {1}\tval: {2}\tchildren[n]: {3}\tmeta: {4}".format(n, i, val, children[n], meta))
+        metaSum += val
+
+    print("Current position: {0}\tmetaSum:{1}\tmaster[i]:{2}".format(i, metaSum, master[i]))
+    #print("Contents of children:", dict(children))
+
+    for n in range(numMeta):
+        meta = master[i]
+        metaSum += meta
+        print("Metadata index: {0}\tMetadata value:{1}\tchildren[n]: {2}".format(n, meta, children[meta-1]))
+        # try:
+        #     valueSum += children[n-1]
+        #     print("Metadata value: {0}\t Child value:{1}".format(master[i], children[meta]))
+        # except IndexError:
+        #     valueSum +=0
+
+        valueSum += children[meta-1]
+        #valueSum += children[meta]
+        i += 1
+
+    return i, metaSum, valueSum
+
+
+
+
+_, metaSum, valueSum = getData()
 
 # ----- PART 1 ------
 # Display the sum of all metadata entries.
-print("Sum of metadata:", sumMeta)
+
+print("Part 1\tSum of metadata:", metaSum)
+
+# ----- PART 2 -----
+# Need to display the total "value" of all nodes.
+# A node only has value if it has children; each node's metadata value points to a child node index.
+# Value is only accrued if the metadata points to an existing child node of the given node.
+
+print("Part 2\tTotal value:", valueSum)
